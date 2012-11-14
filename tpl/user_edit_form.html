@@ -1,0 +1,29 @@
+<div style="float: left; padding-right: 20px;">
+
+<h1>登録者編集</h1>
+<form method=post>
+<input type="hidden" name="key" value="{{ key }}" >
+
+<div class="label">ユーザーID</div>
+<input type="text" name="user_id" value="{{ user_id }}" />
+
+<div class="label">パスワード</div>
+<input type="text" name="passwd" value="{{ passwd }}" />
+
+<div class="label">氏名</div>
+<input type="text" name="name" value="{{ name }}" />
+
+<div class="label">電話番号</div>
+<input type="text" name="phone" value="{{ phone }}" size=30 />
+
+<div class="label">アドレス1</div>
+<input type="text" name="mail1" value="{{ mail1 }}" size=30 />
+
+<div class="label">アドレス2</div>
+<input type="text" name="mail2" value="{{ mail2 }}" size=30 />
+<br><br>
+<input type="submit" name="submit" value="送信" />
+
+</form>
+
+</div>

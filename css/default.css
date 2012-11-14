@@ -1,0 +1,82 @@
+* {
+  font-size: 11pt;
+  margin: 0px;
+  padding: 0px;
+  color: #000000;
+  text-decoration: none;
+}
+h1 {
+  padding: 20px 0px;
+  font-size: 18pt;
+}
+input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #666;
+/*
+*/
+}
+th {
+  background-color: #888888;
+  color: #FFFFFF;
+}
+a:hover {
+  color: #FF0000;
+}
+
+table.list {
+  border: 2px solid #666666;
+  border-collapse: collapse;
+}
+table.list td,table.list th {
+  padding: 5px;
+  border: 1px solid #666666;
+}
+table.list .detail {
+  font-size: 9pt;
+  color: #666666;
+}
+
+#menu {
+  padding: 2px;
+  border-bottom: 1px solid #999999;
+  background-color: #EEEEEE;
+  height: 32px;
+}
+
+#menu a {
+  display: block;
+  float: left;
+  border: 1px solid #EEEEEE;
+  padding: 0px 10px;
+  line-height: 30px;
+}
+
+#menu a:hover {
+  background-color: #DDDDDD;
+  border: 1px solid #888888;
+  color: #000000;
+}
+
+#contents {
+  clear: both;
+  padding: 10px;
+}
+
+#login {
+  border: 0px solid #000000;
+}
+#login h1 {
+  background-color: #EEEEEE;
+  border-bottom: 1px solid #666666;
+  padding: 50px 10px 20px;
+}
+#login table {
+  margin: 100px;
+}
+
+#login table td {
+  padding: 0px 0px 10px 0px;
+}
+
+

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<!--
+  <meta name="viewport" content="width=device-width, user-scalable=yes" />
+-->
+  <title>{{ title }}</title>
+  <link rel="stylesheet" type="text/css" href="/css/default.css" />
+  <link rel="apple-touch-icon" href="/img/icon.png" />
+</head>
+<body>
+  <form id="login" method="post" action="/">
+    <h1>{{ title }}</h1>
+    <table>
+      <tr>
+        <td width=100>USER ID</td>
+        <td><input type="text" name="user_id" value="" style="width: 150px;"></td>
+      </tr>
+      <tr>
+        <td>PASSWORD</td>
+        <td><input type="password" name="passwd" value="" style="width: 150px;"></td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td><input type="submit" name="submit" value="Login"></td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>
