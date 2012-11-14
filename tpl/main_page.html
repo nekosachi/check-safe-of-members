@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=yes" />
+  <title>{{ title }}</title>
+  <link rel="stylesheet" type="text/css" href="/css/default.css" />
+  <link rel="apple-touch-icon" href="/img/icon.png" />
+<script language="JavaScript">
+
+function getTodayString() {
+  td = new Date();
+  y = td.getYear();
+  m = td.getMonth() + 1;
+  d = td.getDate();
+  
+  if (y<2000) { y += 1900; }
+  
+  return y + "-" + ((m < 10) ? "0":"") + m + "-" + ((d < 10) ? "0":"") + d;
+  
+}
+
+function setDate(frm) {
+  frm.value = getTodayString();
+}
+</script>
+</head>
+<body>
+  <div id="menu">
+    {{ menu|safe }}
+  </div>
+  
+  <div id="contents">
+    {{ contents|safe }}
+  </div>
+
+<!--
+<div style="border: 2px solid #000000; border-radius: 10px; -moz-border-radius: 10px; margin: 10px; padding: 10px;">
+  Radius
+</div>
+<input type="button" value="test" onclick="alert(getTodayString());">
+-->
+
+
+</body>
+</html>

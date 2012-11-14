@@ -1,0 +1,26 @@
+{% if exists %}
+<h1>登録者一覧</h1>
+<table class="list">
+  <tr>
+    <th>ID</th>
+    <th>氏名</th>
+    <th>メールアドレス</th>
+    <th>&nbsp;</th>
+  </tr>
+  {% for obj in objects %}
+  <tr style="background-color: {{ obj.color }}">
+    <td align="center">{{ obj.user_id }}</td>
+    <td nowrap>
+      {{ obj.name }}
+    </td>
+    <td>
+      {{ obj.mail1 }}<br />
+      {{ obj.mail2 }}
+    </td>
+    <td><a href="/user?key={{ obj.key }}">編集</a></td>
+  {% endfor %}
+  </tr>
+</table>
+{% else %}
+<h1>登録されていません。</h1>
+{% endif %}
