@@ -7,6 +7,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.mail_handlers import InboundMailHandler
 from google.appengine.ext.webapp.util import run_wsgi_app
 
+from cStringIO import StringIO
+from email.generator import Generator
+
 import datetime
 from view import *
 from conf import *
@@ -14,8 +17,24 @@ from conf import *
 class LogSenderHandler(InboundMailHandler):
     def receive(self, mail_message):
         
+        logging.info("==========")
+        #logging.info("original : " + mail_message.original)
         logging.info("Received a message from: " + mail_message.sender)
-
+        
+        fp = StringIO()
+        g = Generator(fp, mangle_from_=False, maxheaderlen=60)
+        g.flatten(mail_message.original)
+        text = fp.getvalue()
+        #logging.info(text)
+        
+        msg = text.split('**msg**')
+        if len(msg) > 0:
+            logging.info(msg[1])
+        #for s in mail_message.original.values():
+        #    logging.info(s)
+        #logging.info("Body: " + str(mail_message.bodies('text/plain')))
+        #plaintext_bodies = mail_message.bodies('text/plain')
+        
         wk = mail_message.sender
         if wk.find("<") < 0:
             user = wk
