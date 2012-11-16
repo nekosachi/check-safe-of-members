@@ -1,0 +1,23 @@
+{% if exists %}
+<h1>実施一覧</h1>
+<table class="list">
+  <tr>
+    <th>日時</th>
+    <th>メッセージ</th>
+    <th>送</th>
+    <th>返</th>
+    <th>&nbsp;</th>
+  </tr>
+  {% for obj in objects %}
+  <tr style="background-color: {{ obj.color }}">
+    <td>{{ obj.display }}</td>
+    <td>{{ obj.message }}</td>
+    <td align="right">{{ obj.send_num }}</td>
+    <td align="right">{{ obj.ans_num }}</td>
+    <td><a href="/events?name={{ obj.name }}">詳細</a></td>
+  {% endfor %}
+  </tr>
+</table>
+{% else %}
+<h1>安否確認が実施されていません。</h1>
+{% endif %}

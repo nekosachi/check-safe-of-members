@@ -24,14 +24,7 @@ from google.appengine.ext.webapp import template
 
 import webapp2
 
-admin_name = "root"
-app_title = u"安否確認"
-app_id = "confsafe"
-mail_subject = u"安否確認メール"
-mail_body = u"""
-安否確認のため、そのまま返信して下さい。
-https://%s.appspot.com/
-""" % app_id
+from config import *
 
 class UserData(db.Model):
 
@@ -88,24 +81,31 @@ class View(webapp2.RequestHandler):
                 'contents': self.make_get_contents()
             }
             html = self.render('main_page.html', values)
-            self.response.out.write(html)
         else:
-            values = {
-                "title": self.title
-            }
-            html = self.render('login_page.html', values)
-            self.response.out.write(html)
+            html = self.make_login_page()
+            
+        self.response.out.write(html)
             
     def post(self):
         if self.is_login():
             self.make_post_contents()
         else:
-            values = {
-                "title": self.title
-            }
-            html = self.render('login_page.html', values)
+            html = self.make_login_page()
             self.response.out.write(html)
             
+    def make_login_page(self):
+        values = {
+            "title": self.title
+        }
+        html = self.render('login_page.html', values)
+        return html
+    
+    def make_get_contents(self):
+        return ""
+
+    def make_post_contents(self):
+        self.redirect('/')
+        
     def get_cookie(self,name):
 
         return self.request.cookies.get(name,'')
@@ -179,6 +179,7 @@ class Users(View):
         rs = self.DB.all().order("user_id")
         objects = []
         i = 0
+        color = "#FFFFFF"
         
         for obj in rs:
             i += 1
@@ -188,8 +189,13 @@ class Users(View):
                 "passwd": obj.passwd,
                 "name": obj.name,
                 "mail1": obj.mail1,
-                "mail2": obj.mail2
+                "mail2": obj.mail2,
+                "color": color
             })
+            if color == "#FFFFFF":
+                color = "#EEEEEE"
+            else:
+                color = "#FFFFFF"
             
         if i > 0:
             exists = True
@@ -239,7 +245,7 @@ class Users(View):
         if self.is_admin():
             html += self.render('user_edit_form.html', value).encode('utf-8')
             html += self.make_list_html().encode('utf-8')
-            html += "<p style='padding: 10px 0px;'><a href='/user'>追加</a></p>"
+            html += "<p style='padding: 10px 0px;'><a href='/user'>%s</a></p>" % msg_add
         
         return html
 
@@ -317,16 +323,19 @@ class Users(View):
                 users.append(str(obj.key()))
         return users
     
-    def get_name_by_key(self, key):
+    def get_data_by_key(self, key):
         
         rs = self.get_data()
         #rs.filter('__key__ =', key)
-        name = ""
+        data = {}
         for obj in rs:
             if str(obj.key()) == key:
-                name = obj.name.encode('utf-8')
+                data = {
+                    "name":obj.name.encode('utf-8'),
+                    "user_id":obj.user_id.encode('utf-8')
+                }
 
-        return name
+        return data
         
     def get_key_by_mail(self, mail):
 
