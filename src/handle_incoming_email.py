@@ -34,7 +34,8 @@ class LogSenderHandler(InboundMailHandler):
         usr = Users()
         user_key = usr.get_key_by_mail(user)
         
-        wk = str(mail_message.date).replace(" +0900","")
+        wk = str(mail_message.date).replace(" +0900","").replace(" (JST)","")
+        logging.info("date: " + wk)
         received = datetime.datetime.strptime(wk,'%a, %d %b %Y %H:%M:%S')
 
         logging.info("Event: " + event_key)
