@@ -42,18 +42,46 @@ class Events(View):
         rs = self.get_data()
         rs.order("-name")
 
-        html = ""
         ans = AnswerMails()
+
+        objects = []
+        i = 0
+        color = "#FFFFFF"
         
         for obj in rs:
+            i += 1
             cnt = ans.count_by_event(str(obj.key()))
-            html += "<div style='padding: 10px;'><a href='/events?name=%s'>%s</a> : %s [%s / %s]</div>" % (obj.name.encode('utf-8'), obj.name.encode('utf-8'), obj.message.encode('utf-8'), str(cnt), str(obj.send_num))
+            objects.append({
+                "name": obj.name,
+                "display": self.display_name(obj.name.encode('utf-8')),
+                "message": obj.message,
+                "ans_num": cnt,
+                "send_num": obj.send_num,
+                "color": color
+            })
+            if color == "#FFFFFF":
+                color = "#EEEEEE"
+            else:
+                color = "#FFFFFF"
+            
+        exists = False
+        if i > 0:
+            exists = True
+            
+        values = {
+            "objects": objects,
+            "exists": exists
+        }
+        html = self.render("event_list.html", values).encode('utf-8')
+        
         return html
 
     def make_detail_html(self, name):
 
         usr = Users()
         ans = AnswerMails()
+
+        user_name = self.user_name()
         
         rs = self.get_data()
         rs.filter('name =', name)
@@ -64,18 +92,52 @@ class Events(View):
             msg = obj.message.encode('utf-8')
 
         data = ans.get_data_by_event(key)
+        d = datetime.datetime.today() + datetime.timedelta(hours=9)
+        
+        html =""
 
-        html = "<h1>%s</h1>" % name.encode('utf-8')
+        html += "<h1>%s</h1>" % self.display_name(name.encode('utf-8'))
         html += "<p>%s</p>" % msg
+
+        html_ans = ""
+        html_not = ""
+
+        html += "<table class='list' style='margin: 20px;'>"
+        html += "<tr><th>返信日時</th><th>名前</th></tr>"
         
         for s in data:
-            html += "<div style='margin:10px;'>[%s] %s</div>" % (s["date"], usr.get_name_by_key(s["user"]))
+            user_data = usr.get_data_by_key(s["user"])
+            if user_data["user_id"] == user_name:
+                if s["date"] == None:
+                    ans.update(
+                        key, s["user"],
+                        datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second)
+                    )
+                    s["date"] = d.strftime("%Y-%m-%d %H:%M:%S")
+            if s["date"] == None:
+                html_not += "<tr><td><!-- %s --></td><td>%s</td></tr>" % (s["date"], user_data["name"])
+            else:
+                html_ans += "<tr><td>%s</td><td>%s</td></tr>" % (s["date"], user_data["name"])
+            #html += "<div style='margin:10px;'>[%s] %s</div>" % (s["date"], user_data["name"])
 
+        html += html_not + html_ans
+
+        html += "</table>"
+        
         return html
     
     def inc(self, name, mail):
         return ""
-        
+
+    def display_name(self, name):
+        return "%s年%s月%s日 %s時%s分" % (
+            name[0:4],
+            name[4:6],
+            name[6:8],
+            name[8:10],
+            name[10:]
+        )
+    
     def get_key_by_name(self, name):
         rs = self.get_data()
         rs.filter('name =', str(name))
@@ -154,6 +216,7 @@ class AnswerMails(View):
     def get_data_by_event(self, event_key):
         rs = self.get_data()
         rs.filter('event_key =', event_key)
+        rs.order('-received')
         users = []
         for obj in rs:
             users.append({
@@ -190,24 +253,3 @@ class AnswerMails(View):
             
         return flg
 
-class LogSenderHandlerTest:
-    def receive(self):
-        
-        user = "guest@test.ne.jp"
-        event = "201211121509@sample.com".split('@')
-        received = datetime.datetime.now()
-
-        evt = Events()
-        event_key = evt.get_key_by_name(event[0])
-
-        usr = Users()
-        user_key = usr.get_key_by_mail(user)
-
-        if event_key != "" and user_key != "":
-            ans = AnswerMails()
-            ans.add(event_key, user_key, received)
-
-
-        
-            
-    

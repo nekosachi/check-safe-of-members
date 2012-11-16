@@ -16,7 +16,6 @@ class LogSenderHandler(InboundMailHandler):
         
         logging.info("Received a message from: " + mail_message.sender)
 
-        # メールアドレスの取得
         wk = mail_message.sender
         if wk.find("<") < 0:
             user = wk
