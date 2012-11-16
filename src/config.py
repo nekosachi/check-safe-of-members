@@ -8,6 +8,10 @@ mail_subject = u"安否確認メール"
 mail_body = u"""
 安否確認のため、そのまま返信して下さい。
 https://%s.appspot.com/
+
+**msg**
+必要があればここにメッセージを入力
+**msg**
 """ % app_id
 
 msg_add = "追加"
