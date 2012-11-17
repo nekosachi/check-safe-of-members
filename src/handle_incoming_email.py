@@ -28,7 +28,7 @@ class LogSenderHandler(InboundMailHandler):
         #logging.info(text)
         
         msg = text.split('**msg**')
-        if len(msg) > 0:
+        if len(msg) > 1:
             logging.info(msg[1])
         #for s in mail_message.original.values():
         #    logging.info(s)
