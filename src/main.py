@@ -48,5 +48,6 @@ class MainHandler(View):
 app = webapp2.WSGIApplication([('/', MainHandler),
                                LogSenderHandler.mapping(),
                                ('/events', Events),
+                               ('/delete', EventsDelete),
                                ('/user', Users)],
                               debug=True)
