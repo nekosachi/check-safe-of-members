@@ -195,6 +195,24 @@ class Events(View):
         
         self.redirect('/')
 
+class EventsDelete(Events):
+    def make_get_contents(self):
+        
+        ans = AnswerMails()
+        name = self.request.get("name")
+        
+        rs = self.get_data()
+        rs.filter('name =', str(name))
+        
+        key = ""
+        for obj in rs:
+            key = str(obj.key())
+            ans.delete(key)
+            obj.delete()
+            break
+            
+        self.redirect('/')
+
 class AnswerMails(View):
 
     def __init__(self, *arg):
@@ -225,6 +243,16 @@ class AnswerMails(View):
             })
         return users
     
+    def delete(self, event):
+        rs = self.get_data()
+        rs.filter('event_key =', event)
+        flg = False
+    	for obj in rs:
+    		obj.delete()
+    		flg = True
+    		
+    	return flg
+    	
     def add(self, event, users):
         flg = False
         for u in users:
