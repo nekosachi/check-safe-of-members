@@ -37,7 +37,7 @@ class Events(View):
         html = self.render('event_edit_form.html', values).encode('utf-8')
         return html
 
-    def make_list_html(self):
+    def make_list_html(self, admin):
         
         rs = self.get_data()
         rs.order("-name")
@@ -47,6 +47,8 @@ class Events(View):
         objects = []
         i = 0
         color = "#FFFFFF"
+
+        #admin = self.is_admin()
         
         for obj in rs:
             i += 1
@@ -69,6 +71,7 @@ class Events(View):
             exists = True
             
         values = {
+            "admin": admin,
             "objects": objects,
             "exists": exists
         }
@@ -153,63 +156,65 @@ class Events(View):
             html = self.make_detail_html(name)
         else:
             html = self.make_edit_form()
-            html += self.make_list_html()
+            html += self.make_list_html(self.is_admin())
         
         return html
 
     def make_post_contents(self):
-
-        usr = Users()
-        ans = AnswerMails()
         
-        d = datetime.datetime.today() + datetime.timedelta(hours=9)
-        
-        cnt = usr.count_active()
-
-        evt_name = d.strftime("%Y%m%d%H%M")
-
-        obj = self.DB(
-            name = evt_name,
-            message = self.request.get("message"),
-            send_num = cnt,
-            recieved_num = 0
-        )
-
-        obj.put()
-        
-        evt_key = str(obj.key())
-        users = usr.get_active_keys()
-        ans.add(evt_key, users)
-        
-        sender_addr = "%s@%s.appspotmail.com" % (evt_name, app_id)
-        to_addr = usr.make_mail_addresses()
-        message = mail.EmailMessage(sender=sender_addr,
-                                    subject=mail_subject)
-        message.bcc = to_addr
-        message.body = u"""
+        if self.is_admin():
+            usr = Users()
+            ans = AnswerMails()
+            
+            d = datetime.datetime.today() + datetime.timedelta(hours=9)
+            
+            cnt = usr.count_active()
+    
+            evt_name = d.strftime("%Y%m%d%H%M")
+            
+            obj = self.DB(
+                name = evt_name,
+                message = self.request.get("message"),
+                send_num = cnt,
+                recieved_num = 0
+            )
+            
+            obj.put()
+            
+            evt_key = str(obj.key())
+            users = usr.get_active_keys()
+            ans.add(evt_key, users)
+            
+            sender_addr = "%s@%s.appspotmail.com" % (evt_name, app_id)
+            to_addr = usr.make_mail_addresses()
+            message = mail.EmailMessage(sender=sender_addr,
+                                        subject=mail_subject)
+            message.bcc = to_addr
+            message.body = u"""
 %s
 %s
 """ % (self.request.get("message"), mail_body)
-        
-        message.send()
+            
+            message.send()
         
         self.redirect('/')
 
 class EventsDelete(Events):
     def make_get_contents(self):
         
-        ans = AnswerMails()
-        name = self.request.get("name")
-        
-        rs = self.get_data()
-        rs.filter('name =', str(name))
-        
-        key = ""
-        for obj in rs:
-            key = str(obj.key())
-            ans.delete(key)
-            obj.delete()
-            break
+        if self.is_admin():
+            ans = AnswerMails()
+            name = self.request.get("name")
+            
+            rs = self.get_data()
+            rs.filter('name =', str(name))
+            
+            key = ""
+            for obj in rs:
+                key = str(obj.key())
+                ans.delete(key)
+                obj.delete()
+                break
             
         self.redirect('/')
 

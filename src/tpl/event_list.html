@@ -16,7 +16,9 @@
     <td align="right">{{ obj.ans_num }}</td>
     <td>
       <a href="/events?name={{ obj.name }}">詳細</a>
+      {% if admin %}
       <a href="/delete?name={{ obj.name }}">削除</a>
+      {% endif %}
     </td>
   {% endfor %}
   </tr>
