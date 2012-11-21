@@ -26,7 +26,7 @@ class MainHandler(View):
         html = ""
         if self.is_admin():
             html = evt.make_edit_form()
-        html += evt.make_list_html()
+        html += evt.make_list_html(self.is_admin())
 
         return html
 
